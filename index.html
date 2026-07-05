@@ -6,6 +6,10 @@
 <title>How Much House Can I Afford With Down Payment Assistance? | DPA Affordability Calculator</title>
 <meta name="description" content="The only calculator that answers both questions at once: how much house you can afford AND which down payment assistance program could close your gap — with a personalized action plan, instantly, no email required.">
 <link rel="canonical" href="https://REPLACE-DOMAIN/dpa-calculator-v2.html">
+<link rel="preload" as="image" href="hero.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <script type="application/ld+json">
 {
@@ -70,8 +74,8 @@
     --cream:#f7f4ee; --paper:#fff; --ink:#1c1f26; --ink-soft:#57606f;
     --line:#e3e0d6; --green:#2f6b4f; --red:#a33d3d; --amber:#a2701d;
     --radius:10px;
-    --serif:Georgia,'Times New Roman',serif;
-    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    --serif:'Fraunces',Georgia,'Times New Roman',serif;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
   }
   * { box-sizing:border-box; }
   html { scroll-behavior:smooth; }
@@ -86,10 +90,18 @@
   .brand strong { color:var(--gold-light); font-weight:700; }
   .top-note { font-size:13px; color:#cdd3e0; }
 
-  .hero { background:linear-gradient(180deg,var(--navy) 0%,var(--navy-light) 100%); color:#fff; padding:42px 0 60px; }
-  .hero h1 { font-family:var(--serif); font-size:clamp(27px,4vw,40px); line-height:1.15; margin:0 0 14px; max-width:800px; }
-  .hero p.lead { font-size:17px; color:#d7dcea; max-width:640px; margin:0 0 6px; }
-  .trust-row { display:flex; gap:20px; flex-wrap:wrap; margin-top:20px; font-size:13px; color:#b9c1d6; }
+  .hero {
+    background:
+      linear-gradient(100deg, rgba(11,18,35,.94) 0%, rgba(13,21,40,.86) 42%, rgba(22,35,63,.55) 100%),
+      url('hero.jpg') center 38% / cover no-repeat;
+    color:#fff; padding:64px 0 86px;
+  }
+  .hero h1 { font-family:var(--serif); font-weight:600; font-size:clamp(28px,4.2vw,44px); line-height:1.12; margin:0 0 16px; max-width:820px; text-shadow:0 2px 20px rgba(0,0,0,.55); }
+  .hero h1 em { color:var(--gold-light); font-style:italic; }
+  .hero p.lead { font-size:17.5px; color:#e4e9f5; max-width:640px; margin:0 0 6px; text-shadow:0 1px 12px rgba(0,0,0,.6); }
+  .hero .cta { margin-top:26px; }
+  .hero .cta .btn { font-size:16px; padding:15px 28px; box-shadow:0 6px 24px rgba(169,130,47,.45); }
+  .trust-row { display:flex; gap:20px; flex-wrap:wrap; margin-top:22px; font-size:13px; color:#d6dcea; text-shadow:0 1px 8px rgba(0,0,0,.6); }
 
   .card { background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); box-shadow:0 1px 3px rgba(22,35,63,.06); }
 
@@ -237,10 +249,11 @@
       <span>&#128196; Programs linked to official state agencies</span>
       <span>&#9878; Estimates only — not a loan offer</span>
     </div>
+    <div class="cta"><a class="btn" href="#calc" onclick="document.querySelector('.calc-shell').scrollIntoView({behavior:'smooth'});return false;">See what you qualify for — free &darr;</a></div>
   </div>
 </div>
 
-<div class="wrap calc-shell">
+<div class="wrap calc-shell" id="calc">
   <div class="card calc-grid">
     <div class="panel inputs">
       <div class="field">
@@ -360,13 +373,13 @@
 <div class="sticky-calc"><button class="btn" id="calcBtnSticky">Calculate my affordability &amp; match</button></div>
 
 <div class="wrap">
-  <div class="tripwire-card">
+  <div class="tripwire-card" id="offer">
     <div class="txt">
-      <h3>Want the full negotiation system?</h3>
-      <p>The Homebuyer's Edge gives you the 6-question lender script, all 7 hidden closing fees (with the exact words to get them waived), and a lender comparison worksheet — on top of whatever assistance you qualify for above.</p>
-      <div class="price">$27 one-time · instant PDF download · refund if it doesn't save you $3,000+</div>
+      <h3>The fees they're counting on you not to question.</h3>
+      <p>Your closing sheet will carry roughly seven negotiable fees. Buyers who don't know their names pay all of them — usually $3,000+ stacked on top of everything you just calculated. <b style="color:#fff;">The Homebuyer's Edge</b> hands you the 6-question lender script, all 7 fees by name, and the word-for-word phrases that get them reduced or waived. You did the math above. This is how you keep it.</p>
+      <div class="price">$27 · instant PDF · simple promise: if it doesn't save you at least $3,000 at closing, email us — full refund</div>
     </div>
-    <a class="btn" href="#" id="tripwireLink">Get the guide &rarr;</a>
+    <a class="btn" href="#" id="tripwireLink">Arm me before I call a lender — $27 &rarr;</a>
   </div>
 </div>
 
@@ -375,6 +388,14 @@
     <h2>Your personalized action plan</h2>
     <p class="section-lead">Generated from your numbers above. Recalculate any time — the plan updates instantly.</p>
     <ol class="plan-list" id="planList"></ol>
+    <div class="tripwire-card" style="margin-top:26px;">
+      <div class="txt">
+        <h3>The plan above is free. Executing it cheaply is the skill.</h3>
+        <p>Steps 1–8 get you to the closing table. What happens <em>at</em> the table decides whether you keep your assistance money — or quietly hand it back in fees. The Homebuyer's Edge is the script for that room.</p>
+        <div class="price">$27 · downloads in 60 seconds · $3,000+ savings promise or your money back</div>
+      </div>
+      <a class="btn" href="#offer" onclick="document.getElementById('tripwireLink').focus();">Get the Edge &rarr;</a>
+    </div>
   </div>
 </section>
 
@@ -400,7 +421,7 @@
   </div>
 </section>
 
-<section class="section methodology">
+<section class="section methodology" id="methodology">
   <div class="wrap">
     <div class="card">
       <h2 style="padding:26px 28px 0;">How we calculate this</h2>
@@ -452,7 +473,7 @@
 <footer>
   <div class="wrap">
     <div>&copy; 2026 DPA Estimator — a home-affordability tool. Not a lender.</div>
-    <div><a href="#faq">FAQ</a> &nbsp;&middot;&nbsp; <a href="#disclosure">Disclosures</a> &nbsp;&middot;&nbsp; <a href="#video">How it works</a></div>
+    <div><a href="#calc">Calculator</a> &nbsp;&middot;&nbsp; <a href="#plan">Action plan</a> &nbsp;&middot;&nbsp; <a href="#video">Video guide</a> &nbsp;&middot;&nbsp; <a href="#methodology">Methodology</a> &nbsp;&middot;&nbsp; <a href="#faq">FAQ</a> &nbsp;&middot;&nbsp; <a href="#offer">The Homebuyer's Edge</a> &nbsp;&middot;&nbsp; <a href="#disclosure">Disclosures</a></div>
   </div>
 </footer>
 
@@ -680,6 +701,7 @@ function calculate() {
   plan.push(`<b>Get quotes from 3+ lenders</b> that participate in your state's program. Ask each for a Loan Estimate the same day so the numbers are comparable.`);
   if (rent > 0 && totalPITI/rent > 1.4) plan.push(`<b>Stress-test the payment:</b> your estimated PITI is ${(totalPITI/rent).toFixed(1)}x your rent. Live on the difference for 2-3 months first — save the surplus straight into your down payment fund.`);
   plan.push(`<b>Keep files ready:</b> 2 years of W-2s/tax returns, 2 months of bank statements, and pay stubs — DPA layering means extra documentation.`);
+  plan.push(`<b>Negotiate your closing fees.</b> This is where first-time buyers most often hand back $3,000+ of the money the steps above just saved — the fees are negotiable, but only if you name them. <a href="#offer">The Homebuyer's Edge script</a> covers exactly this.`);
   $('planList').innerHTML = plan.map(x => `<li>${x}</li>`).join('');
 
   $('stateBadge').textContent = p.name.toUpperCase();
