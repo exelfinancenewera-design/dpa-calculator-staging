@@ -28,4 +28,4 @@ Allow: /
 User-agent: Perplexity-User
 Allow: /
 
-Sitemap: https://exelfinancenewera-design.github.io/dpa-calculator-staging/sitemap.xml
+Sitemap: https://dpacalculator.com/sitemap.xml

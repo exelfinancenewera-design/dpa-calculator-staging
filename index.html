@@ -5,18 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>How Much House Can I Afford With Down Payment Assistance? | DPA Affordability Calculator</title>
 <meta name="description" content="The only calculator that answers both questions at once: how much house you can afford AND which down payment assistance program could close your gap — with a personalized action plan, instantly, no email required.">
-<link rel="canonical" href="https://exelfinancenewera-design.github.io/dpa-calculator-staging/">
+<link rel="canonical" href="https://dpacalculator.com/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='8' fill='%2316233f'/%3E%3Cpath d='M24 9 L40 23 H35 V38 H28 V29 H20 V38 H13 V23 H8 Z' fill='%23c9a24f'/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="DPA Affordability Calculator">
 <meta property="og:title" content="How Much House Can I Afford With Down Payment Assistance?">
 <meta property="og:description" content="The only free calculator that answers both questions at once: your real affordability AND which down payment assistance program could close your gap — instant, no email required.">
-<meta property="og:url" content="https://exelfinancenewera-design.github.io/dpa-calculator-staging/">
-<meta property="og:image" content="https://exelfinancenewera-design.github.io/dpa-calculator-staging/hero.jpg">
+<meta property="og:url" content="https://dpacalculator.com/">
+<meta property="og:image" content="https://dpacalculator.com/hero.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="How Much House Can I Afford With Down Payment Assistance?">
 <meta name="twitter:description" content="Free calculator: your affordability + your state's down payment assistance match + a personalized action plan. No email required.">
-<meta name="twitter:image" content="https://exelfinancenewera-design.github.io/dpa-calculator-staging/hero.jpg">
+<meta name="twitter:image" content="https://dpacalculator.com/hero.jpg">
 <link rel="preload" as="image" href="hero.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,13 +39,13 @@
       "@type": "Organization",
       "name": "DPA Estimator",
       "description": "Independent home-affordability and down payment assistance education tool. Not a lender.",
-      "url": "https://exelfinancenewera-design.github.io/dpa-calculator-staging/"
+      "url": "https://dpacalculator.com/"
     },
     {
       "@type": "BreadcrumbList",
       "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://exelfinancenewera-design.github.io/dpa-calculator-staging/"},
-        {"@type": "ListItem", "position": 2, "name": "Down Payment Assistance Calculator", "item": "https://exelfinancenewera-design.github.io/dpa-calculator-staging/"}
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://dpacalculator.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Down Payment Assistance Calculator", "item": "https://dpacalculator.com/"}
       ]
     },
     {
@@ -812,9 +812,27 @@ if (CONFIG.affiliateUrl) $('affiliateLink').href = CONFIG.affiliateUrl;
 else $('affiliateBox').style.display = 'none';
 if (CONFIG.videoEmbedUrl) {
   $('videoShell').innerHTML = /\.(mp4|webm)(\?|$)/i.test(CONFIG.videoEmbedUrl)
-    ? '<video controls preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;" src="' + CONFIG.videoEmbedUrl + '" title="Calculator walkthrough"></video>'
+    ? '<video controls preload="metadata" poster="video-poster.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" src="' + CONFIG.videoEmbedUrl + '" title="Calculator walkthrough"></video>'
     : '<iframe src="' + CONFIG.videoEmbedUrl + '" title="Calculator walkthrough" allowfullscreen loading="lazy"></iframe>';
 }
+
+// --- Guaranteed in-page anchor scrolling (native hash-jump silently fails in some states) ---
+document.addEventListener('click', function(e) {
+  const a = e.target.closest('a[href^="#"]');
+  if (!a) return;
+  const t = document.querySelector(a.getAttribute('href'));
+  if (t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth', block:'start'}); history.replaceState(null, '', a.getAttribute('href')); }
+});
+
+// --- Hero image resilience: if the CDN drops it, retry once with a cache-buster ---
+(function(){
+  const probe = new Image();
+  probe.onerror = () => {
+    document.querySelector('.hero').style.backgroundImage =
+      "linear-gradient(100deg, rgba(11,18,35,.94) 0%, rgba(13,21,40,.86) 42%, rgba(22,35,63,.55) 100%), url('hero.jpg?r=" + Date.now() + "')";
+  };
+  probe.src = 'hero.jpg';
+})();
 </script>
 
 </body>
