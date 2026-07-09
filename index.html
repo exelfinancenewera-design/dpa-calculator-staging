@@ -208,6 +208,9 @@
   .tripwire-card .price { font-size:13px; color:var(--gold-light); font-weight:700; margin-top:6px; }
   .tripwire-card a.btn { text-decoration:none; }
 
+  .tripwire-card .upsell { margin-top:12px; font-size:13px; color:#cfd6e6; border-top:1px solid rgba(255,255,255,.14); padding-top:11px; }
+  .tripwire-card .upsell a { color:var(--gold-light); font-weight:700; text-decoration:none; }
+  .tripwire-card .upsell a:hover { text-decoration:underline; }
   .affiliate-box { margin-top:14px; padding:14px 16px; border-radius:8px; background:rgba(255,255,255,.05); border:1px dashed rgba(255,255,255,.25); font-size:13.5px; color:#cfd6e6; }
   .affiliate-box a { color:var(--gold-light); font-weight:700; }
   .affiliate-fine { font-size:11px; color:#8b93a8; margin-top:6px; }
@@ -376,10 +379,11 @@
   <div class="tripwire-card" id="offer">
     <div class="txt">
       <h3>The fees they're counting on you not to question.</h3>
-      <p>Your closing sheet will carry roughly seven negotiable fees. Buyers who don't know their names pay all of them — usually $3,000+ stacked on top of everything you just calculated. <b style="color:#fff;">The Homebuyer's Edge</b> hands you the 6-question lender script, all 7 fees by name, and the word-for-word phrases that get them reduced or waived. You did the math above. This is how you keep it.</p>
+      <p>Your closing sheet will carry roughly seven negotiable fees. Buyers who don't know their names pay all of them — usually $3,000+ stacked on top of everything you just calculated. <b style="color:#fff;">The Quick-Start Rate &amp; Fee Playbook</b> hands you the 6-question lender script, all 7 fees by name, and the word-for-word phrases that get them reduced or waived. You did the math above. This is how you keep it.</p>
       <div class="price">$27 · instant PDF · simple promise: if it doesn't save you at least $3,000 at closing, email us — full refund</div>
+      <div class="upsell" id="upsellNote">Buying in the next 6–12 months? The Playbook is step one of <a href="#" id="upsellLink" rel="noopener">The Complete Coaching System — the full path, $97 &rarr;</a></div>
     </div>
-    <a class="btn" href="#" id="tripwireLink">Arm me before I call a lender — $27 &rarr;</a>
+    <a class="btn" href="#" id="tripwireLink" rel="noopener">Arm me before I call a lender — $27 &rarr;</a>
   </div>
 </div>
 
@@ -491,11 +495,13 @@
 <script>
 // ================= CONFIG — the ONLY block to edit when wiring the site live =================
 const CONFIG = {
-  espEndpoint: "",            // TODO: ESP subscribe URL (Kit/ConvertKit/Mailchimp). Empty = client-side stub.
-  espApiKey: "",              // TODO: ESP public API key if required.
-  tripwireCheckoutUrl: "",    // TODO: $27 Homebuyer's Edge checkout URL (Gumroad/Stripe). Empty = alert stub.
-  affiliateUrl: "",           // TODO: lender-comparison affiliate URL. Empty = hides link target (#).
-  videoEmbedUrl: "walkthrough-video-ui.mp4" // NotebookLM UI walkthrough (deployed alongside this file). Swap for a YouTube/Vimeo embed URL any time.
+  // MailerLite embedded-form subscribe endpoint (account 2499190, form "DPA Calculator — Report + Fee-Buster Capture").
+  // Subscribers land in the "DPA Calculator Leads" group → 7-day nurture automation.
+  espEndpoint: "https://assets.mailerlite.com/jsonp/2499190/forms/192497350459000193/subscribe",
+  tripwireCheckoutUrl: "https://shueskills.gumroad.com/l/kphcys",   // $27 Quick-Start Rate & Fee Playbook (Gumroad)
+  upsellCheckoutUrl: "https://shueskills.gumroad.com/l/saueyf",     // $97 Complete Coaching System (Gumroad) — publish it "for sale" in Gumroad to go live
+  affiliateUrl: "",           // TODO: lender-comparison affiliate URL. Empty = hides link.
+  videoEmbedUrl: "walkthrough-video-ui.mp4" // NotebookLM UI walkthrough (deployed alongside this file).
 };
 // =============================================================================================
 
@@ -743,24 +749,30 @@ $('captureForm').addEventListener('submit', function(e) {
   const email = $('emailCapture').value;
   const btn = $('captureBtn');
   if (!email) return;
-  const done = () => { btn.textContent = 'Sent ✓'; btn.disabled = true; };
+  const done = () => { btn.textContent = 'Sent ✓'; btn.disabled = true; $('emailCapture').disabled = true; };
   if (CONFIG.espEndpoint) {
-    fetch(CONFIG.espEndpoint, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ api_key: CONFIG.espApiKey || undefined, email, tags:['dpa-calculator','report-request'] })
-    }).then(done).catch(() => { btn.textContent = 'Try again'; });
+    // MailerLite embedded-form submit: form-encoded fields[email], no-cors (opaque but registers).
+    const body = new URLSearchParams({ 'fields[email]': email, 'ml-submit': '1', 'anticsrf': 'true' });
+    fetch(CONFIG.espEndpoint, { method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'}, body })
+      .then(done).catch(() => { btn.textContent = 'Try again'; btn.disabled = false; });
   } else {
     console.log('[lead-capture stub] set CONFIG.espEndpoint. Email:', email);
     done();
   }
 });
 
-// --- Tripwire checkout ---
-$('tripwireLink').addEventListener('click', function(e) {
-  if (CONFIG.tripwireCheckoutUrl) { this.href = CONFIG.tripwireCheckoutUrl; return; }
-  e.preventDefault();
-  alert('Set CONFIG.tripwireCheckoutUrl to your live checkout URL (Gumroad/Stripe) for The Homebuyer\'s Edge, $27.');
-});
+// --- Tripwire ($27) + upsell ($97) checkout links, set at load so the first click navigates ---
+if (CONFIG.tripwireCheckoutUrl) {
+  const t = $('tripwireLink'); t.href = CONFIG.tripwireCheckoutUrl; t.target = '_blank';
+} else {
+  $('tripwireLink').addEventListener('click', e => { e.preventDefault(); alert('Set CONFIG.tripwireCheckoutUrl.'); });
+}
+if (CONFIG.upsellCheckoutUrl) {
+  const u = $('upsellLink'); u.href = CONFIG.upsellCheckoutUrl; u.target = '_blank';
+} else if ($('upsellNote')) {
+  $('upsellNote').style.display = 'none';
+}
 
 // --- Affiliate link + video embed from CONFIG ---
 if (CONFIG.affiliateUrl) $('affiliateLink').href = CONFIG.affiliateUrl;
