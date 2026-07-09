@@ -1,0 +1,31 @@
+# DPA Affordability Calculator — all crawlers welcome, AI crawlers explicitly.
+User-agent: *
+Allow: /
+
+# Google AI (blocking Google-Extended does NOT affect AI Overviews, but we allow everything)
+User-agent: Google-Extended
+Allow: /
+
+# OpenAI / ChatGPT
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic / Claude
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-User
+Allow: /
+User-agent: Claude-SearchBot
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+User-agent: Perplexity-User
+Allow: /
+
+Sitemap: https://exelfinancenewera-design.github.io/dpa-calculator-staging/sitemap.xml

@@ -5,7 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>How Much House Can I Afford With Down Payment Assistance? | DPA Affordability Calculator</title>
 <meta name="description" content="The only calculator that answers both questions at once: how much house you can afford AND which down payment assistance program could close your gap — with a personalized action plan, instantly, no email required.">
-<link rel="canonical" href="https://REPLACE-DOMAIN/dpa-calculator-v2.html">
+<link rel="canonical" href="https://exelfinancenewera-design.github.io/dpa-calculator-staging/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='8' fill='%2316233f'/%3E%3Cpath d='M24 9 L40 23 H35 V38 H28 V29 H20 V38 H13 V23 H8 Z' fill='%23c9a24f'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DPA Affordability Calculator">
+<meta property="og:title" content="How Much House Can I Afford With Down Payment Assistance?">
+<meta property="og:description" content="The only free calculator that answers both questions at once: your real affordability AND which down payment assistance program could close your gap — instant, no email required.">
+<meta property="og:url" content="https://exelfinancenewera-design.github.io/dpa-calculator-staging/">
+<meta property="og:image" content="https://exelfinancenewera-design.github.io/dpa-calculator-staging/hero.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How Much House Can I Afford With Down Payment Assistance?">
+<meta name="twitter:description" content="Free calculator: your affordability + your state's down payment assistance match + a personalized action plan. No email required.">
+<meta name="twitter:image" content="https://exelfinancenewera-design.github.io/dpa-calculator-staging/hero.jpg">
 <link rel="preload" as="image" href="hero.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,13 +39,13 @@
       "@type": "Organization",
       "name": "DPA Estimator",
       "description": "Independent home-affordability and down payment assistance education tool. Not a lender.",
-      "url": "https://REPLACE-DOMAIN/"
+      "url": "https://exelfinancenewera-design.github.io/dpa-calculator-staging/"
     },
     {
       "@type": "BreadcrumbList",
       "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://REPLACE-DOMAIN/"},
-        {"@type": "ListItem", "position": 2, "name": "Down Payment Assistance Calculator", "item": "https://REPLACE-DOMAIN/dpa-calculator-v2.html"}
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://exelfinancenewera-design.github.io/dpa-calculator-staging/"},
+        {"@type": "ListItem", "position": 2, "name": "Down Payment Assistance Calculator", "item": "https://exelfinancenewera-design.github.io/dpa-calculator-staging/"}
       ]
     },
     {
@@ -102,6 +113,9 @@
   .hero .cta { margin-top:26px; }
   .hero .cta .btn { font-size:16px; padding:15px 28px; box-shadow:0 6px 24px rgba(169,130,47,.45); }
   .trust-row { display:flex; gap:20px; flex-wrap:wrap; margin-top:22px; font-size:13px; color:#d6dcea; text-shadow:0 1px 8px rgba(0,0,0,.6); }
+  .answer-block { margin-top:24px; max-width:720px; padding:14px 18px; border-left:3px solid var(--gold-light);
+    background:rgba(11,18,35,.55); border-radius:0 8px 8px 0; font-size:14.5px; line-height:1.6; color:#e4e9f5; }
+  .answer-block b { color:var(--gold-light); }
 
   .card { background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); box-shadow:0 1px 3px rgba(22,35,63,.06); }
 
@@ -253,6 +267,9 @@
       <span>&#9878; Estimates only — not a loan offer</span>
     </div>
     <div class="cta"><a class="btn" href="#calc" onclick="document.querySelector('.calc-shell').scrollIntoView({behavior:'smooth'});return false;">See what you qualify for — free &darr;</a></div>
+    <div class="answer-block" id="answer">
+      <b>The short answer:</b> you can typically afford a home where the total monthly payment stays under 31% of your gross income (and under 43% with your other debts) — and as of Q1 2026 there are <b>2,679 down payment assistance programs</b> in the US, 77% of them active and funded (source: Down Payment Resource), that can cover part or all of the 3% minimum down payment. This calculator computes both in one step.
+    </div>
   </div>
 </div>
 
@@ -501,8 +518,20 @@ const CONFIG = {
   tripwireCheckoutUrl: "https://shueskills.gumroad.com/l/kphcys",   // $27 Quick-Start Rate & Fee Playbook (Gumroad)
   upsellCheckoutUrl: "https://shueskills.gumroad.com/l/saueyf",     // $97 Complete Coaching System (Gumroad) — publish it "for sale" in Gumroad to go live
   affiliateUrl: "",           // TODO: lender-comparison affiliate URL. Empty = hides link.
-  videoEmbedUrl: "walkthrough-video-ui.mp4" // NotebookLM UI walkthrough (deployed alongside this file).
+  videoEmbedUrl: "walkthrough-video-ui.mp4", // NotebookLM UI walkthrough (deployed alongside this file).
+  ga4Id: ""                   // TODO: GA4 Measurement ID (G-XXXXXXXXXX). Empty = analytics off, no errors.
 };
+
+// --- GA4 loader + event helper (safe no-op until CONFIG.ga4Id is set) ---
+if (CONFIG.ga4Id) {
+  const s = document.createElement('script'); s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + CONFIG.ga4Id;
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function(){ dataLayer.push(arguments); };
+  gtag('js', new Date()); gtag('config', CONFIG.ga4Id);
+}
+const track = (name, params) => { if (window.gtag) gtag('event', name, params || {}); };
 // =============================================================================================
 
 // STATE_PROGRAMS — verified starter dataset (11 states), each source checked against the
@@ -715,6 +744,7 @@ function calculate() {
 
   LAST = { code, income, debts, targetPrice, savings, rent, monthlySave, credit, rate,
            estPrice, pi, taxM, insM, totalPITI, backEndDTI, gap, dpNeeded, assistAmt, p, plan, verdict, qual };
+  track('calculate', { state: code, est_price: Math.round(estPrice) });
 }
 
 $('calcBtn').addEventListener('click', calculate);
@@ -725,6 +755,7 @@ calculate();
 
 // --- PDF report (print stylesheet — zero dependencies, keeps page <100KB) ---
 $('pdfBtn').addEventListener('click', () => {
+  track('pdf_download');
   if (!LAST) calculate();
   const L = LAST;
   $('prDate').textContent = 'Generated ' + new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'}) + ' · dpaestimator report';
@@ -749,7 +780,7 @@ $('captureForm').addEventListener('submit', function(e) {
   const email = $('emailCapture').value;
   const btn = $('captureBtn');
   if (!email) return;
-  const done = () => { btn.textContent = 'Sent ✓'; btn.disabled = true; $('emailCapture').disabled = true; };
+  const done = () => { btn.textContent = 'Sent ✓'; btn.disabled = true; $('emailCapture').disabled = true; track('email_capture'); };
   if (CONFIG.espEndpoint) {
     // MailerLite embedded-form submit: form-encoded fields[email], no-cors (opaque but registers).
     const body = new URLSearchParams({ 'fields[email]': email, 'ml-submit': '1', 'anticsrf': 'true' });
@@ -765,11 +796,13 @@ $('captureForm').addEventListener('submit', function(e) {
 // --- Tripwire ($27) + upsell ($97) checkout links, set at load so the first click navigates ---
 if (CONFIG.tripwireCheckoutUrl) {
   const t = $('tripwireLink'); t.href = CONFIG.tripwireCheckoutUrl; t.target = '_blank';
+  t.addEventListener('click', () => track('tripwire_click', { value: 27, currency: 'USD' }));
 } else {
   $('tripwireLink').addEventListener('click', e => { e.preventDefault(); alert('Set CONFIG.tripwireCheckoutUrl.'); });
 }
 if (CONFIG.upsellCheckoutUrl) {
   const u = $('upsellLink'); u.href = CONFIG.upsellCheckoutUrl; u.target = '_blank';
+  u.addEventListener('click', () => track('upsell_click', { value: 97, currency: 'USD' }));
 } else if ($('upsellNote')) {
   $('upsellNote').style.display = 'none';
 }
