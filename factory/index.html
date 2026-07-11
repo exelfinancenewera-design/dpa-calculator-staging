@@ -58,12 +58,11 @@ td a:hover{text-decoration:underline}
 .c-warn{background:var(--warn-bg);color:var(--warn)}
 .c-risk{background:var(--risk-bg);color:var(--risk)}
 .c-mut{background:var(--panel-2);color:var(--muted)}
-.rail{list-style:none;margin:0;padding:0;counter-reset:ph}
+.rail{list-style:none;margin:0;padding:0;counter-reset:ph -1}
 .rail li{position:relative;padding:9px 0 9px 44px;border-bottom:1px solid var(--line-2)}
 .rail li:last-child{border-bottom:none}
 .rail li::before{counter-increment:ph;content:"P" counter(ph);position:absolute;left:0;top:9px;width:32px;text-align:center;
  font-family:var(--serif);font-style:italic;font-weight:700;color:var(--gold);font-size:15px}
-.rail li:first-child::before{content:"P0"}
 .rail b{display:block;font-size:13px}
 .rail span{color:var(--muted);font-size:12px}
 .gatelist{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;font-size:12.5px;color:var(--muted)}
