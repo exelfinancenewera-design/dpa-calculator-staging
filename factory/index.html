@@ -1,0 +1,281 @@
+<meta name="robots" content="noindex">
+<title>Calculator Factory — Control Room</title>
+<style>
+:root{
+  --bg:#0B1428; --panel:#121E38; --panel-2:#0E1830; --ink:#E7EBF5; --muted:#93A0BC; --faint:#5E6A85;
+  --gold:#C9A24F; --gold-2:#A9822F; --line:rgba(201,162,79,.20); --line-2:rgba(147,160,188,.16);
+  --ok:#7FD6A3; --ok-bg:rgba(47,107,79,.28); --warn:#F0C46C; --warn-bg:rgba(162,112,29,.26);
+  --risk:#F08C8C; --risk-bg:rgba(163,61,61,.28);
+  --serif:Georgia,'Iowan Old Style','Times New Roman',serif;
+  --ui:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: light){ :root{
+  --bg:#F7F5F0; --panel:#FFFFFF; --panel-2:#F0EDE4; --ink:#1A1D24; --muted:#57606F; --faint:#8A8F9C;
+  --line:rgba(169,130,47,.35); --line-2:rgba(26,29,36,.12);
+  --ok:#2F6B4F; --ok-bg:#E4EFE8; --warn:#8A5E12; --warn-bg:#F4ECD8; --risk:#A33D3D; --risk-bg:#F5E6E4;
+}}
+:root[data-theme="dark"]{
+  --bg:#0B1428; --panel:#121E38; --panel-2:#0E1830; --ink:#E7EBF5; --muted:#93A0BC; --faint:#5E6A85;
+  --line:rgba(201,162,79,.20); --line-2:rgba(147,160,188,.16);
+  --ok:#7FD6A3; --ok-bg:rgba(47,107,79,.28); --warn:#F0C46C; --warn-bg:rgba(162,112,29,.26);
+  --risk:#F08C8C; --risk-bg:rgba(163,61,61,.28);
+}
+:root[data-theme="light"]{
+  --bg:#F7F5F0; --panel:#FFFFFF; --panel-2:#F0EDE4; --ink:#1A1D24; --muted:#57606F; --faint:#8A8F9C;
+  --line:rgba(169,130,47,.35); --line-2:rgba(26,29,36,.12);
+  --ok:#2F6B4F; --ok-bg:#E4EFE8; --warn:#8A5E12; --warn-bg:#F4ECD8; --risk:#A33D3D; --risk-bg:#F5E6E4;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:14px;line-height:1.55;padding:28px 22px 60px}
+.shell{max-width:1180px;margin:0 auto}
+header.top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:22px;
+ background:linear-gradient(135deg,#0B1428 0%,#16233F 55%,#2A3A5E 85%,rgba(201,162,79,.45) 100%);
+ border:1px solid var(--line);border-radius:12px;padding:22px 24px}
+header.top h1,header.top .sub{color:#E7EBF5}header.top .sub{color:#93A0BC}header.top .stamp{color:#C9A24F}
+.brandrow{display:flex;gap:14px;align-items:center}
+.track{margin:11px 0}.track b{font-size:13px}
+.bar{height:8px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:100px;margin:6px 0 3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold)}
+.tstamp{font-size:11px;color:var(--faint)}
+h1{font-family:var(--serif);font-weight:600;font-size:30px;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h1 em{color:var(--gold);font-style:normal}
+.sub{color:var(--muted);font-size:13px}
+.stamp{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+.grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line-2);border-radius:10px;padding:18px 20px}
+.panel h2{font-family:var(--serif);font-size:17px;font-weight:600;margin:0 0 4px}
+.panel .note{color:var(--faint);font-size:12px;margin:0 0 14px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th{font-size:10.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--faint);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:9px 8px;border-bottom:1px solid var(--line-2);vertical-align:top;font-size:13px}
+td .name{font-weight:700}
+td .url{font-size:11.5px;color:var(--muted);word-break:break-all}
+td a{color:var(--gold);text-decoration:none}
+td a:hover{text-decoration:underline}
+.chip{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:100px;letter-spacing:.03em;white-space:nowrap;margin:1px 2px 1px 0}
+.c-ok{background:var(--ok-bg);color:var(--ok)}
+.c-warn{background:var(--warn-bg);color:var(--warn)}
+.c-risk{background:var(--risk-bg);color:var(--risk)}
+.c-mut{background:var(--panel-2);color:var(--muted)}
+.rail{list-style:none;margin:0;padding:0;counter-reset:ph}
+.rail li{position:relative;padding:9px 0 9px 44px;border-bottom:1px solid var(--line-2)}
+.rail li:last-child{border-bottom:none}
+.rail li::before{counter-increment:ph;content:"P" counter(ph);position:absolute;left:0;top:9px;width:32px;text-align:center;
+ font-family:var(--serif);font-style:italic;font-weight:700;color:var(--gold);font-size:15px}
+.rail li:first-child::before{content:"P0"}
+.rail b{display:block;font-size:13px}
+.rail span{color:var(--muted);font-size:12px}
+.gatelist{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;font-size:12.5px;color:var(--muted)}
+.gatelist div::before{content:"◆ ";color:var(--gold);font-size:10px}
+.log{list-style:none;margin:0;padding:0;font-size:12.5px;color:var(--muted)}
+.log li{padding:6px 0;border-bottom:1px solid var(--line-2)}
+.log li b{color:var(--ink)}
+.gen label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--faint);margin:12px 0 5px}
+.gen input,.gen textarea{width:100%;background:var(--panel-2);border:1px solid var(--line-2);border-radius:6px;color:var(--ink);
+ font-family:var(--ui);font-size:13.5px;padding:9px 10px}
+.gen input:focus,.gen textarea:focus{outline:none;border-color:var(--gold)}
+.btn{background:var(--gold);color:#0B1428;border:none;border-radius:7px;font-weight:800;font-size:13px;padding:11px 18px;cursor:pointer;margin-top:14px}
+.btn:hover{filter:brightness(1.08)}
+.btn:focus-visible,.gen input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+pre.out{background:var(--panel-2);border:1px solid var(--line-2);border-radius:8px;padding:12px;font-size:11.5px;line-height:1.5;
+ white-space:pre-wrap;word-break:break-word;color:var(--muted);max-height:260px;overflow:auto;margin:12px 0 0}
+.copychip{font-size:11px;color:var(--gold);background:none;border:1px solid var(--line);border-radius:100px;padding:3px 12px;cursor:pointer;margin-top:8px}
+.filemap{font-size:12px;color:var(--muted);line-height:1.8}
+.filemap code{color:var(--ink);background:var(--panel-2);padding:1px 6px;border-radius:4px;font-size:11.5px}
+.span2{grid-column:1/-1}
+footer{margin-top:22px;color:var(--faint);font-size:11.5px;border-top:1px solid var(--line);padding-top:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+</style>
+
+<div class="shell">
+<header class="top">
+  <div class="brandrow">
+    <svg viewBox="0 0 48 48" width="46" height="46" aria-hidden="true"><rect width="48" height="48" rx="10" fill="#0B1428" stroke="#C9A24F" stroke-width="1.5"/><path d="M24 11 38 23h-4v13h-8v-8h-4v8h-8V23h-4z" fill="#C9A24F"/><circle cx="37.5" cy="10.5" r="5" fill="#C9A24F"/><text x="37.5" y="13.4" font-size="8" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-weight="700" fill="#0B1428">i</text></svg>
+    <div>
+      <h1>i<em>FACTORY</em> — Control Room</h1>
+      <div class="sub">The Intelligent Factory. Demand-gated: nothing builds below a 70 opportunity score — accuracy over fancy, ROI over nice-to-have.</div>
+    </div>
+  </div>
+  <div class="stamp">Template rev v4 · identity gate ✓ · self-tested end-to-end</div>
+</header>
+
+<div class="grid">
+  <div class="panel span2">
+    <h2>Portfolio</h2>
+    <p class="note">Every tool, its variant tag, and the state of each revenue wire. Chips are live-verified status, not intentions.</p>
+    <div style="overflow-x:auto"><table>
+      <tr><th>Tool</th><th>Where it lives</th><th>Revenue wiring</th><th>Status</th></tr>
+      <tr>
+        <td><span class="name">DPA V1 — control</span><div class="url">variant: (untagged, baseline)</div></td>
+        <td class="url"><a href="https://dpacalculator.com/">dpacalculator.com</a></td>
+        <td>
+          <span class="chip c-ok">email ✓ live</span><span class="chip c-ok">$27 purchasable</span>
+          <span class="chip c-ok">$97 purchasable</span><span class="chip c-ok">GA4 ✓</span>
+          <span class="chip c-warn">ads: placeholders</span><span class="chip c-warn">affiliate: empty</span>
+          <span class="chip c-risk">Gumroad files: KD to confirm</span>
+        </td>
+        <td><span class="chip c-ok">PRODUCTION</span></td>
+      </tr>
+      <tr>
+        <td><span class="name">DPA V4 — flagship</span><div class="url">variant: v4-flagship · A/B candidate · template truth</div></td>
+        <td class="url">
+          <a href="https://dpacalculator.com/v4/">dpacalculator.com/v4/</a> (clickable, noindex)<br>
+          <a href="https://exelfinancenewera-design.github.io/dpa-v4-preview/">github.io/dpa-v4-preview</a>
+        </td>
+        <td>
+          <span class="chip c-ok">email ✓ proven {"success":true}</span><span class="chip c-ok">$27+$97 wired</span>
+          <span class="chip c-ok">GA4 + site_variant ✓</span><span class="chip c-warn">ads: placeholders</span>
+        </td>
+        <td><span class="chip c-warn">STAGING — awaiting dpaestimator.com ($9.99, KD yes pending)</span></td>
+      </tr>
+      <tr>
+        <td><span class="name">DPA V3 — editorial</span><div class="url">variant: v3-editorial</div></td>
+        <td class="url"><a href="https://exelfinancenewera-design.github.io/dpa-v3-preview/">github.io/dpa-v3-preview</a></td>
+        <td><span class="chip c-mut">full wiring (superseded)</span></td>
+        <td><span class="chip c-mut">ARCHIVED — failed image-led review</span></td>
+      </tr>
+      <tr>
+        <td><span class="name">Loan·Shield — demo</span><div class="url">variant: demo-loanshield</div></td>
+        <td class="url">CONFIGS/_demo-loanshield.config.json (not deployed)</td>
+        <td><span class="chip c-mut">surface-swap proof</span></td>
+        <td><span class="chip c-warn">NON-SHIP — engine/data still DPA</span></td>
+      </tr>
+    </table></div>
+  </div>
+
+  <div class="panel">
+    <h2>Pipeline — 9 phases, all gated</h2>
+    <p class="note">The order is the process. A build may not skip forward past a failed gate.</p>
+    <ol class="rail">
+      <li><b>Wedge</b><span>competitor-gap query nobody owns · opportunity ≥70 · money-on-table checklist</span></li>
+      <li><b>Research pack</b><span>3 sourced stats · verified dataset · 6 sourced FAQs · ICP pain language</span></li>
+      <li><b>Engine module</b><span>niche math + inputs + report slots · independent recompute must match</span></li>
+      <li><b>Config authoring</b><span>35 slots + meta · forbid-words · offer ladder priced to value</span></li>
+      <li><b>Build</b><span>build.py — 10 self-diagnose gates, nothing ships on a FAIL</span></li>
+      <li><b>QA</b><span>qa_run.py + eyeballed fold/tall/mobile screenshots</span></li>
+      <li><b>Deploy staging</b><span>github.io preview + clickable /slug/ on dpacalculator.com (noindex)</span></li>
+      <li><b>Domain + analytics</b><span>KD buys → DNS → HTTPS → robots/sitemap/llms swap → IndexNow → GSC/GA4</span></li>
+      <li><b>Products + video</b><span>lead magnet → tripwire → upsell-in-PDF · walkthrough video · Gumroad listing</span></li>
+      <li><b>Learning loop</b><span>append lessons to LEARNING-LOG.md — next build starts 10x</span></li>
+    </ol>
+  </div>
+
+  <div class="panel">
+    <h2>Binary gates</h2>
+    <p class="note">build.py G1–G10 (mechanical) + QA (rendered). All must PASS.</p>
+    <div class="gatelist">
+      <div>slot-map integrity</div><div>all slots filled</div>
+      <div>DOM contract — 54 ids</div><div>JSON-LD parses</div>
+      <div>size &lt; 100 KB</div><div>no previous-niche leak</div>
+      <div>config keys present</div><div>variant tag matches</div>
+      <div>nav scroll clearance</div><div>video + poster convention</div>
+      <div>zero JS errors</div><div>card balance &lt; 10%</div>
+      <div>zero horizontal overflow</div><div>engine math = recompute</div>
+      <div>checkout rendered-verified</div><div>email wire {"success":true}</div>
+    </div>
+    <h2 style="margin-top:18px">Learning log — latest</h2>
+    <ul class="log">
+      <li><b>Image leads, text follows</b> — hero photo + ≤2 lines above the fold; accordions carry long text.</li>
+      <li><b>Twin cards equal height AND density</b> — stretch alone leaves dead whitespace.</li>
+      <li><b>Fixed nav needs scroll-padding</b> — or anchors hide their own headings.</li>
+      <li><b>Verify Gumroad rendered, never by 200</b> — "published" can still deliver nothing.</li>
+      <li><b>Byte-identity is the template gate</b> — extract → build must reproduce the reference exactly.</li>
+    </ul>
+  </div>
+
+  <div class="panel span2 gen">
+    <h2>Spin up a new tool</h2>
+    <p class="note"><b style="color:var(--gold)">Only the NICHE field is required.</b> No research needed on your side — leave the rest blank and the factory derives wedge, brand, domain and offer itself (P0–P1), then reports the demand score (≥70 or NO-BUILD verdict) before any build starts. Copy the prompt into any Claude session (Opus 4.7+).</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 18px">
+      <div>
+        <label for="g-niche">Niche / need (the pain) — REQUIRED, the rest optional</label>
+        <input id="g-niche" placeholder="e.g. student loan payoff order">
+        <label for="g-brand">Brand (A·B form)</label>
+        <input id="g-brand" placeholder="e.g. Payoff·Pilot">
+        <label for="g-domain">Domain idea</label>
+        <input id="g-domain" placeholder="e.g. payoffpilot.com">
+      </div>
+      <div>
+        <label for="g-wedge">Wedge — what competitors' tools can't answer</label>
+        <input id="g-wedge" placeholder="e.g. payoff date WITH employer-match refinance factored in">
+        <label for="g-offer">Tripwire product idea + price</label>
+        <input id="g-offer" placeholder="e.g. Rate-Negotiation Script Pack — $19">
+      </div>
+    </div>
+    <button class="btn" id="g-go">Compose kickoff prompt</button>
+    <pre class="out" id="g-out" hidden></pre>
+    <button class="copychip" id="g-copy" hidden>Copy prompt</button>
+  </div>
+
+  <div class="panel">
+    <h2>Build tracker — live rubric per tool</h2>
+    <p class="note">P0→P9 with timestamps. A phase completes only when its gate passes; DEPLOY is blocked until all complete. The building session updates this panel + republishes.</p>
+    <div class="track"><b>DPA V4 — flagship</b>
+      <div class="bar"><i style="width:100%"></i></div>
+      <span class="tstamp">P0✓ P1✓ P2✓ P3✓ P4✓ P5✓ P6✓ P7◐(domain pending KD) P8✓ P9✓ · gates 16/16 · 2026-07-11</span></div>
+    <div class="track"><b>Next niche — awaiting your pick</b>
+      <div class="bar"><i style="width:0%"></i></div>
+      <span class="tstamp">Demand gate: builds ONLY at opportunity score ≥70 with sourced evidence (DPA scored 75.5 — format proven). No blind builds.</span></div>
+  </div>
+
+  <div class="panel">
+    <h2>Distribution engine — the real gap (~0%)</h2>
+    <p class="note">Product 100%, distribution 0% = revenue 0. Ranked by impact-per-hour.</p>
+    <ul class="log">
+      <li><span class="chip c-risk">KD · 2 min</span> <b>Verify GSC + submit sitemap</b> — until then Google crawls slowly and keywords are invisible.</li>
+      <li><span class="chip c-risk">KD · 1 click</span> <b>Activate the 2 MailerLite automations</b> — captured leads currently receive NO emails.</li>
+      <li><span class="chip c-warn">FACTORY</span> <b>50-state programmatic pages</b> — the biggest organic lever, one batch build.</li>
+      <li><span class="chip c-warn">FACTORY</span> <b>YouTube upload</b> of walkthrough, keyword title — strongest AI-Overview correlate.</li>
+      <li><span class="chip c-warn">FACTORY</span> <b>Data-study link magnet</b> ("State of DPA 2026") — earns backlinks.</li>
+      <li><span class="chip c-ok">LIVE</span> robots + sitemap + llms.txt + IndexNow pinged (Bing/ChatGPT lane).</li>
+      <li><span class="chip c-mut">LATER</span> Social via connected Metricool / Blotato / Pinterest MCPs.</li>
+    </ul>
+    <p class="note" style="margin-top:10px"><b>How you SEE visitors:</b> GA4 Realtime + Reports (property G-RJ5SHMEZWN, already firing from dpacalculator.com) · GSC Performance = which keywords, once verified.</p>
+  </div>
+
+  <div class="panel span2">
+    <h2>Factory files</h2>
+    <div class="filemap">
+      <code>06-FACTORY/TEMPLATE/template.html</code> — 35-slot locked shell (design law: image-led, twin cards) ·
+      <code>CONFIGS/dpa.config.json</code> — reference niche, rebuilds live V4 byte-for-byte ·
+      <code>BUILD/build.py</code> — config → tool, G1–G10 self-diagnosis ·
+      <code>BUILD/qa_run.py</code> — one-command rendered QA ·
+      <code>BUILD/extract.py</code> — re-derive template after an approved design rev ·
+      <code>LEARNING-LOG.md</code> — read before, append after, every build ·
+      skill: <code>~/.claude/skills/niche-calc-factory</code> — the full operating system, auto-loads in every session
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div>DPA Estimator portfolio · navy/gold design system · FTC-clean: every stat sourced, no fake trust signals</div>
+  <div>iFACTORY · control room updates each build — state at 2026-07-11</div>
+</footer>
+</div>
+
+<script>
+document.getElementById('g-go').addEventListener('click', function(){
+  var v = function(id){ return document.getElementById(id).value.trim() || '<'+id.slice(2)+' — TBD>'; };
+  var prompt =
+"Use the niche-calc-factory skill (auto-loads from ~/.claude/skills). Read 06-FACTORY/LEARNING-LOG.md first.\n\n" +
+"NEW TOOL REQUEST\n" +
+"- Niche/pain: " + v('g-niche') + "\n" +
+"- Brand: " + v('g-brand') + "\n" +
+"- Domain idea: " + v('g-domain') + " (do NOT buy without my explicit yes)\n" +
+"- Wedge hypothesis: " + v('g-wedge') + " (validate in P0 before building)\n" +
+"- Tripwire idea: " + v('g-offer') + " (price to value in P3)\n\n" +
+"Run the pipeline P0→P9 with every binary gate. Segmentation law: NEW MailerLite group+form for this niche, new siteVariant, never touch other niches' lists. " +
+"Deploy staging to github.io preview + clickable noindex /slug/ on dpacalculator.com. " +
+"Test end-to-end as the end user (qa_run.py + rendered checkout + real email-wire test) BEFORE showing me a URL. " +
+"Blank fields above = derive them yourself in P0-P1 and report the demand score (>=70 or NO-BUILD) with sources BEFORE building. " +
+"Definition of done: all gates PASS + staging URL + proof screenshots + learning-log entry + dashboard.html build-tracker row updated (republish artifact). Apply token discipline throughout.";
+  var out = document.getElementById('g-out');
+  out.textContent = prompt; out.hidden = false;
+  document.getElementById('g-copy').hidden = false;
+});
+document.getElementById('g-copy').addEventListener('click', function(){
+  navigator.clipboard.writeText(document.getElementById('g-out').textContent).then(function(){
+    document.getElementById('g-copy').textContent = 'Copied ✓';
+  });
+});
+</script>
